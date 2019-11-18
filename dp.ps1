@@ -9,12 +9,13 @@ while (!$errorcode) {
     Get-Content data.in | ./std | Out-File std.out;
     $std_code=$LASTEXITCODE;
     $sw2.Stop();
-    Write-Output "No difference";
-    Write-Output ("my.exe finished with exit code "+$my_code+" within "+$sw1.Elapsed.TotalMilliseconds+"ms");
-    Write-Output ("std.exe finished with exit code "+$std_code+" within "+$sw2.Elapsed.TotalMilliseconds+"ms"),"";
+    Write-Host "No difference" -BackgroundColor Green;
+    Write-Host ("my.exe finished with exit code "+$my_code+" within "+$sw1.Elapsed.TotalMilliseconds+"ms");
+    Write-Host ("std.exe finished with exit code "+$std_code+" within "+$sw2.Elapsed.TotalMilliseconds+"ms");
     $my=Get-Content my.out;
     $std=Get-Content std.out;
     $errorcode=Compare-Object $my $std
 }
-Write-Output "Error occurred:","******my.out******",$my,"******std.out******",$std,"******data.in*******",Get-Content data.in,"******finished******"
+Write-Host "Error occurred:","******my.out******",$my,"******std.out******",$std,"******data.in*******",(Get-Content data.in) -Separator "`n"
+Write-Host "******finished******" -BackgroundColor Yellow -ForegroundColor Red 
 Pause;
