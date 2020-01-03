@@ -8,7 +8,7 @@ while (!$errorcode) {
             break;
         }
     }
-    ./random | Out-File data.in;
+    python myrandom.py | Out-File data.in;
     if($?){Write-Host "data.in Generated" -ForegroundColor Green}
     else {
         Write-Host `r,"data.in Generation failed" -ForegroundColor Red
@@ -32,15 +32,15 @@ while (!$errorcode) {
     $totstdtime+=$sw2.Elapsed.TotalMilliseconds
     $my=Get-Content my.out;
     $std=Get-Content std.out;
-    if(!$my -and !$std){$errorcode=0}
-    else {$errorcode=Compare-Object $my $std}
+    if($my -and $std){$errorcode=Compare-Object $my $std}
+    else {$errorcode=1}
     if($errorcode){break}
     else {Write-Host "No difference" -ForegroundColor Green;}
 }
 if($errorcode){
-    Write-Host "Error occurred:","******my.out******",$my,"******std.out******",$std,"******data.in*******",(Get-Content data.in),`n -Separator "`n"
-    Write-Host "******finished******" -BackgroundColor Yellow -ForegroundColor Red
+    Write-Host "`nError occurred:","******my.out******",$my,"******std.out******",$std,"******data.in*******",(Get-Content data.in),`n -Separator "`n"
+    Write-Host "`n******finished******" -BackgroundColor Yellow -ForegroundColor Red
 }
-Write-Host ("my.exe used "+$totmytime+" ms") -ForegroundColor Gray
-Write-Host ("std.exe used "+$totstdtime+" ms") -ForegroundColor Gray
+Write-Host ("my used "+$totmytime+" ms") -ForegroundColor Gray
+Write-Host ("std used "+$totstdtime+" ms") -ForegroundColor Gray
 Pause;
