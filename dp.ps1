@@ -1,5 +1,16 @@
 $errorcode=0;$totmytime=0;$totstdtime=0;
 [Console]::TreatControlCAsInput = $True;
+
+#Your random data genarator
+$myrandom=python myrandom.py
+
+foreach($i in Get-ChildItem -Filter *.cpp) {
+    g++ $i.Name -o $i.BaseName;
+    if($LASTEXITCODE) {
+        $errorcode=$LASTEXITCODE;
+        if($errorcode) {break;}
+    }
+}
 while (!$errorcode) {
     If ($Host.UI.RawUI.KeyAvailable -and ($Key = $Host.UI.RawUI.ReadKey("AllowCtrlC,NoEcho,IncludeKeyUp"))) {
         If ([Int]$Key.Character -eq 3) {
@@ -8,7 +19,7 @@ while (!$errorcode) {
             break;
         }
     }
-    python myrandom.py | Out-File data.in;
+    $myrandom | Out-File data.in;
     if($?){Write-Host "data.in Generated" -ForegroundColor Green}
     else {
         Write-Host `r,"data.in Generation failed" -ForegroundColor Red
@@ -33,6 +44,7 @@ while (!$errorcode) {
     $my=Get-Content my.out;
     $std=Get-Content std.out;
     if($my -and $std){$errorcode=Compare-Object $my $std}
+    elseif (-not $my -and -not $std){$errorcode=0}
     else {$errorcode=1}
     if($errorcode){break}
     else {Write-Host "No difference" -ForegroundColor Green;}
